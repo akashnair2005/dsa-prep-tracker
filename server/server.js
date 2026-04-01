@@ -43,6 +43,4 @@ app.get("/progress", (req, res) => {
     res.json(progress);
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+module.exports = app;
