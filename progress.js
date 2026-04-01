@@ -1,7 +1,7 @@
 const container = document.getElementById("progress-container");
 
 async function loadProgress() {
-    const res = await fetch("http://localhost:3000/progress");
+    const res = await fetch("https://dsa-prep-tracker.vercel.app/progress");
     const data = await res.json();
 
     let html = "<h2>Your Questions</h2>";

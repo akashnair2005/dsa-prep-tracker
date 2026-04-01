@@ -3,13 +3,7 @@ const resultDiv = document.getElementById("result");
 
 let currentSolution = "";
 
-// SEARCH
-form.addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const qNum = document.getElementById("question-number").value;
-
-    const res = await fetch(`http://localhost:3000/question/${qNum}`);
+    const res = await fetch(`https://dsa-prep-tracker.vercel.app/question/${qNum}`);
     const data = await res.json();
 
     if (data.error) {
@@ -44,7 +38,7 @@ function viewSolution() {
 
 // MARK SOLVED
 async function markSolved(id) {
-    await fetch(`http://localhost:3000/solve/${id}`, {
+    await fetch(`https://dsa-prep-tracker.vercel.app/solve/${id}`, {
         method: "POST"
     });
 
