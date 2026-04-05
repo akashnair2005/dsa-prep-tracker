@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem | DecipherDrill</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific overrides for LC fetched HTML */
+        .lc-content { font-size: 1.05rem; line-height: 1.6; color: #cbd5e1; margin-top: 15px; }
+        .lc-content p { margin-bottom: 15px; }
+        .lc-content strong, .lc-content blockquote { color: #f8fafc; }
+        .lc-content pre { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; white-space: pre-wrap;}
+        .lc-content code { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', monospace;}
+        .lc-content ul { padding-left: 20px; margin-bottom: 15px; }
+        
+        /* Notes Area */
+        .notes-area {
+            width: 100%; height: calc(100% - 100px); 
+            background: #020617; border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px; padding: 20px; color: #e2e8f0;
+            font-family: inherit; font-size: 1rem;
+            resize: none; outline: none; margin-top: 15px;
+        }
+        .notes-area:focus { border-color: var(--brand-primary); }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow glow-1"></div>
+
+    <nav class="navbar glass">
+        <div class="nav-brand">
+            <span class="logo-icon">💠</span>
+            <span class="logo-text">Decipher<span class="highlight">Drill</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="https://leetcode.com/" target="_blank">LeetCode</a>
+        </div>
+    </nav>
+
+    <main class="problem-layout">
+        
+        <!-- Left Panel: Instruction / Info -->
+        <section class="problem-desc-panel glass" id="left-panel">
+            <a href="index.html" class="back-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Dashboard
+            </a>
+            
+            <div class="problem-header" id="prob-header">
+                <h2>Loading Problem from LeetCode...</h2>
+                <div class="spinner" style="margin-top:20px;">Retrieving from proxy server...</div>
+            </div>
+
+            <div id="prob-details" class="lc-content" style="display:none;">
+                <!-- LC HTML injected here -->
+            </div>
+            
+            <div id="prob-hints" style="margin-top:30px; display:none;">
+                <h4 style="color:var(--brand-primary); margin-bottom:10px;">Hints / Tags</h4>
+                <div id="prob-tags" class="tags-cell" style="margin-bottom:15px;"></div>
+            </div>
+            
+        </section>
+
+        <!-- Right Panel: Notes / Tools -->
+        <section class="problem-solution-panel glass">
+            <div class="action-bar" style="justify-content: space-between;">
+                <h3 style="display: flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Personal Notes & Scratchpad
+                </h3>
+                
+                <button id="toggle-status-btn" class="btn-primary" style="opacity: 0.5; pointer-events: none;">
+                     Loading...
+                </button>
+            </div>
+            
+            <textarea id="personal-notes" class="notes-area" placeholder="Type your notes, hints, or rough scratchpad code here. Notes are auto-saved locally..."></textarea>
+        </section>
+
+    </main>
+
+    <script src="problem.js"></script>
+</body>
+</html>

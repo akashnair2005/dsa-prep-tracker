@@ -1,46 +1,49 @@
 const express = require("express");
 const cors = require("cors");
+const lcApi = require("./leetcode");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-const questions = require("./questions");
-
-let progress = {};
-
-// GET QUESTION
-app.get("/question/:id", (req, res) => {
-    const id = parseInt(req.params.id);
-
-    if (questions[id]) {
-        res.json({
-            ...questions[id],
-            next: questions[id + 1] ? id + 1 : null,
-            solved: progress[id] ? true : false
-        });
-    } else {
-        res.json({ error: "Question not found" });
+// GET: User Profile Stats
+app.get("/api/lc/user/:username", async (req, res) => {
+    try {
+        const stats = await lcApi.getUserStats(req.params.username);
+        if (!stats) return res.status(404).json({ error: "User not found" });
+        res.json(stats);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
     }
 });
 
-// MARK SOLVED
-app.post("/solve/:id", (req, res) => {
-    const id = parseInt(req.params.id);
-
-    if (questions[id]) {
-        progress[id] = true;
-        res.json({ message: "Marked as solved" });
-    } else {
-        res.json({ error: "Invalid ID" });
+// GET: Fetch list of LC questions
+app.get("/api/lc/problems", async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 100;
+        const skip = parseInt(req.query.skip) || 0;
+        const problems = await lcApi.getProblemList(limit, skip);
+        res.json(problems);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
     }
 });
 
-// GET PROGRESS
-app.get("/progress", (req, res) => {
-    res.json(progress);
+// GET: Fetch single LC question
+app.get("/api/lc/problem/:slug", async (req, res) => {
+    try {
+        const problem = await lcApi.getProblemDetails(req.params.slug);
+        if (!problem) return res.status(404).json({ error: "Problem not found" });
+        res.json(problem);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`LeetCode Proxy Server running on http://localhost:${PORT}`);
 });
 
 module.exports = app;

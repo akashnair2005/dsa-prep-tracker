@@ -2,34 +2,55 @@ const form = document.getElementById("search-form");
 const resultDiv = document.getElementById("result");
 
 let currentSolution = "";
+let currentQuestion = null;
 
-    const res = await fetch(`https://dsa-prep-tracker.vercel.app/question/${qNum}`);
-    const data = await res.json();
-
-    if (data.error) {
-        resultDiv.innerHTML = `<p>${data.error}</p>`;
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const qNum = parseInt(document.getElementById("question-number").value);
+    
+    if (!qNum || qNum < 1) {
+        resultDiv.innerHTML = `<p>Please enter a valid question number</p>`;
         return;
     }
 
-    currentSolution = data.solution;
+    try {
+        const res = await fetch(`http://localhost:3000/api/lc/problems?limit=1&skip=${qNum-1}`);
+        const data = await res.json();
 
-    resultDiv.innerHTML = `
-        <h2>${data.title}</h2>
-        <p>Difficulty: ${data.difficulty}</p>
-        <p>Time Complexity: ${data.complexity}</p>
+        if (!data || !data[0]) {
+            resultDiv.innerHTML = `<p>Question not found</p>`;
+            return;
+        }
 
-        <p>Status: 
-            <span class="${data.solved ? 'solved' : 'unsolved'}">
-                ${data.solved ? "Solved" : "Not Solved"}
-            </span>
-        </p>
+        currentQuestion = data[0];
+        const solved = JSON.parse(localStorage.getItem('decipherSolved')) || {};
 
-        <div class="btn-group">
-            <button onclick="viewSolution()">View Answer</button>
-            <button onclick="markSolved(${qNum})">Mark as Solved</button>
-        </div>
-    `;
+        resultDiv.innerHTML = `
+            <h2>${currentQuestion.title}</h2>
+            <p>Difficulty: <span style="color: ${currentQuestion.difficulty === 'Hard' ? '#ef4444' : currentQuestion.difficulty === 'Medium' ? '#f59e0b' : '#10b981'}">${currentQuestion.difficulty}</span></p>
+            <p>Slug: ${currentQuestion.titleSlug}</p>
+            <p>Acceptance Rate: ${(currentQuestion.acRate).toFixed(2)}%</p>
+
+            <p>Status: 
+                <span class="${solved[qNum] ? 'solved' : 'unsolved'}">
+                    ${solved[qNum] ? "✅ Solved" : "❌ Not Solved"}
+                </span>
+            </p>
+
+            <div class="btn-group">
+                <button onclick="viewSolution()">View Details</button>
+                <button onclick="markSolved(${qNum})">Mark as Solved</button>
+            </div>
+        `;
+    } catch (err) {
+        resultDiv.innerHTML = `<p style="color: #ef4444">Error: ${err.message}</p>`;
+    }
 });
+
+async function searchQuestion(qNum) {
+    const res = await fetch(`http://localhost:3000/api/lc/problems?limit=1&skip=${qNum-1}`);
+    const data = await res.json();
+}
 
 // VIEW SOLUTION
 function viewSolution() {
@@ -38,9 +59,10 @@ function viewSolution() {
 
 // MARK SOLVED
 async function markSolved(id) {
-    await fetch(`https://dsa-prep-tracker.vercel.app/solve/${id}`, {
-        method: "POST"
-    });
+    // Store locally
+    const solved = JSON.parse(localStorage.getItem('decipherSolved')) || {};
+    solved[id] = true;
+    localStorage.setItem('decipherSolved', JSON.stringify(solved));
 
     alert("Marked as solved ✅");
 }
